@@ -10,12 +10,12 @@ html,body{
   padding:0;
   width:100%;
   height:100%;
-  background:#090014;
+  background:radial-gradient(circle at top,#120018,#050008);
   overflow:hidden;
   font-family:'Segoe UI',sans-serif;
 }
 
-/* CENTER TEXT */
+/* CENTER CONTENT */
 .center{
   position:absolute;
   inset:0;
@@ -23,18 +23,185 @@ html,body{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-  z-index:5;
+  text-align:center;
+  z-index:10;
   pointer-events:none;
 }
 
+/* MAIN TEXT */
 h1{
-  font-size:4.5rem;
-  letter-spacing:6px;
+  font-size:5rem;
+  letter-spacing:7px;
   color:#fff;
   text-shadow:
-    0 0 20px #ff7aa2,
-    0 0 60px #ff2e63,
-    0 0 120px #ff2e63;
+    0 0 25px #ff9bb8,
+    0 0 80px #ff2e63,
+    0 0 160px #ff2e63;
+  animation:breath 6s ease-in-out infinite;
+}
+
+p{
+  margin-top:16px;
+  font-size:1.35rem;
+  color:#ffd6e0;
+  opacity:.95;
+}
+
+@keyframes breath{
+  0%,100%{transform:scale(1)}
+  50%{transform:scale(1.15)}
+}
+
+canvas{
+  position:fixed;
+  inset:0;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="world"></canvas>
+
+<div class="center">
+  <h1 id="title">H 🤗</h1>
+  <p id="sub">A hug that holds the heart together</p>
+</div>
+
+<!-- SOFT BACKGROUND MUSIC -->
+<audio id="music" loop>
+  <source src="https://cdn.pixabay.com/audio/2022/10/03/audio_4e8e5c1c1c.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+/* ===============================
+   MASTER EMOTIONAL ENGINE (JS)
+================================ */
+
+/* MUSIC AUTO PLAY (ON TOUCH) */
+const music=document.getElementById("music");
+window.addEventListener("click",()=>music.play(),{once:true});
+
+/* CANVAS SETUP */
+const canvas=document.getElementById("world");
+const ctx=canvas.getContext("2d");
+resize();
+window.onresize=resize;
+function resize(){
+  canvas.width=innerWidth;
+  canvas.height=innerHeight;
+}
+
+/* SMOOTH EASING */
+const ease=t=>t*t*(3-2*t);
+
+/* HEART PARTICLES */
+class Heart{
+  constructor(){
+    this.x=canvas.width/2+(Math.random()-.5)*220;
+    this.y=canvas.height+60;
+    this.size=12+Math.random()*26;
+    this.speed=.25+Math.random()*.7;
+    this.life=0;
+    this.max=2+Math.random()*2;
+    this.swing=Math.random()*Math.PI*2;
+  }
+  update(){
+    this.life+=.0025;
+    this.y-=this.speed;
+    this.x+=Math.sin(this.swing+=.02)*.7;
+  }
+  draw(){
+    let a=1-ease(this.life/this.max);
+    if(a<=0) return;
+    ctx.globalAlpha=a;
+    ctx.fillStyle="#ff4d88";
+    ctx.beginPath();
+    ctx.moveTo(this.x,this.y);
+    ctx.bezierCurveTo(
+      this.x-this.size,this.y-this.size,
+      this.x-this.size*2,this.y+this.size/2,
+      this.x,this.y+this.size
+    );
+    ctx.bezierCurveTo(
+      this.x+this.size*2,this.y+this.size/2,
+      this.x+this.size,this.y-this.size,
+      this.x,this.y
+    );
+    ctx.fill();
+  }
+}
+
+/* HUG AURA LAYERS */
+class Aura{
+  constructor(r,s){
+    this.r=r;
+    this.a=Math.random()*Math.PI*2;
+    this.s=s;
+  }
+  update(){ this.a+=this.s; }
+  draw(){
+    const x=canvas.width/2+Math.cos(this.a)*50;
+    const y=canvas.height/2+Math.sin(this.a)*30;
+    const g=ctx.createRadialGradient(x,y,10,x,y,this.r);
+    g.addColorStop(0,"rgba(255,120,160,.35)");
+    g.addColorStop(1,"rgba(255,120,160,0)");
+    ctx.fillStyle=g;
+    ctx.beginPath();
+    ctx.arc(x,y,this.r,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+
+const hearts=[];
+const auras=[
+  new Aura(140,.0018),
+  new Aura(200,.0012),
+  new Aura(260,.0008)
+];
+
+/* TEXT EMOTION FLOW */
+const lines=[
+  "H 🤗",
+  "Come Here",
+  "You Are Safe",
+  "Feel My Heart",
+  "This Hug Is Forever"
+];
+let ti=0;
+setInterval(()=>{
+  title.innerText=lines[ti++%lines.length];
+},4500);
+
+/* INTERACTION — TOUCH / MOUSE = STRONGER HUG */
+let intensity=1;
+window.addEventListener("mousemove",()=>intensity=1.8);
+window.addEventListener("touchstart",()=>intensity=2.2);
+
+/* MAIN CINEMATIC LOOP */
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  auras.forEach(a=>{
+    a.update();
+    a.draw();
+  });
+
+  if(Math.random()<0.12*intensity) hearts.push(new Heart());
+
+  for(let i=hearts.length-1;i>=0;i--){
+    hearts[i].update();
+    hearts[i].draw();
+    if(hearts[i].life>hearts[i].max) hearts.splice(i,1);
+  }
+
+  requestAnimationFrame(animate);
+}
+animate();
+</script>
+
+</body>
+</html>    0 0 120px #ff2e63;
   animation:breath 4s ease-in-out infinite;
 }
 
