@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Happy Hug Day 🤗</title>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  height:100vh;
+  background:radial-gradient(circle at top,#ff9ebd,#4a0d24);
+  overflow:hidden;
+}
+
+/* CENTER */
+.center{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  z-index:10;
+}
+
+/* MAIN TEXT */
+h1{
+  font-size:4rem;
+  color:white;
+  letter-spacing:4px;
+  text-shadow:
+    0 0 20px #ffd6e0,
+    0 0 50px #ff4d6d;
+  animation:heartbeat 3s infinite;
+}
+
+h1 span{
+  color:#ffccd5;
+}
+
+/* SUB TEXT */
+p{
+  margin-top:15px;
+  font-size:1.4rem;
+  color:#ffe5ec;
+  opacity:.9;
+}
+
+/* HUG ANIMATION */
+.hug{
+  position:relative;
+  width:240px;
+  height:220px;
+  margin:45px 0;
+}
+
+.person{
+  position:absolute;
+  width:110px;
+  height:160px;
+  border-radius:60px;
+}
+
+.person.left{
+  left:0;
+  background:#ffb3c6;
+  animation:hugLeft 4s infinite ease-in-out;
+}
+
+.person.right{
+  right:0;
+  background:#ffc2d1;
+  animation:hugRight 4s infinite ease-in-out;
+}
+
+@keyframes hugLeft{
+  0%,100%{transform:translateX(0)}
+  50%{transform:translateX(38px)}
+}
+
+@keyframes hugRight{
+  0%,100%{transform:translateX(0)}
+  50%{transform:translateX(-38px)}
+}
+
+/* FLOATING HEARTS */
+.heart{
+  position:absolute;
+  bottom:-30px;
+  color:#ff4d6d;
+  animation:float 7s linear infinite;
+  opacity:.85;
+}
+
+@keyframes float{
+  0%{transform:translateY(0) scale(.8); opacity:0}
+  15%{opacity:1}
+  100%{transform:translateY(-120vh) scale(1.6); opacity:0}
+}
+
+/* TEXT PULSE */
+@keyframes heartbeat{
+  0%{transform:scale(1)}
+  50%{transform:scale(1.1)}
+  100%{transform:scale(1)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="center">
+  <h1>H 🤗</h1>
+  <p>A hug that says everything without words 💞</p>
+
+  <div class="hug">
+    <div class="person left"></div>
+    <div class="person right"></div>
+  </div>
+</div>
+
+<script>
+/* SOUL TEXT LOOP */
+const lines=[
+  "H 🤗",
+  "A Warm Hug 💕",
+  "Hold Me Close 🤍",
+  "Forever Safe 💞"
+];
+let i=0;
+setInterval(()=>{
+  document.querySelector("h1").innerText=lines[i++%lines.length];
+},3200);
+
+/* HEART PARTICLES */
+setInterval(()=>{
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="❤";
+  h.style.left=Math.random()*100+"vw";
+  h.style.fontSize=(16+Math.random()*34)+"px";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),7000);
+},200);
+</script>
+
+</body>
+</html>
